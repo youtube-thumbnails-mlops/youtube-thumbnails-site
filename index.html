@@ -431,6 +431,9 @@
             // Human -> WB
             drawPath('node-human', 'node-wb', 'straight', 'Promote to Prod', { x: 10, y: 0 });
 
+            // Testing -> RunPod (Execution environment)
+            drawPath('node-human', 'node-runpod', 'curve', 'Executes On', { x: 0, y: 0 });
+
             // WB -> Inf: 'Deploy Static'. Center it.
             drawPath('node-wb', 'node-inf', 'step', 'Deploy', { x: 0, y: -5 });
         }
