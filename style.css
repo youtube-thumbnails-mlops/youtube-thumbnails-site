@@ -97,7 +97,8 @@ h3 {
 
 /* Architecture Hero */
 .hero-architecture {
-    height: 100vh;
+    min-height: 100vh;
+    /* Changed from height: 100vh to allow growth */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -105,6 +106,8 @@ h3 {
     width: 100%;
     overflow: hidden;
     padding-top: 120px;
+    padding-bottom: 50px;
+    /* Add bottom padding */
     /* Offset for Fixed Navbar (Increased) */
 }
 
