@@ -28,56 +28,65 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="badge">v1.0 Production Ready</div>
-            <h1>Automated <span class="gradient-text">MLOps Pipeline</span><br>for YouTube Thumbnails</h1>
-            <p>A robust, daily-running pipeline collecting high-quality thumbnail data for multi-class classification.
-            </p>
-            <div class="cta-group">
-                <a href="https://github.com/youtube-thumbnails-mlops/youtube-thumbnails-collection"
-                    class="btn-primary"><i class="fab fa-github"></i> View Collection Code</a>
-                <a href="https://github.com/youtube-thumbnails-mlops/youtube-thumbnails-dataset"
-                    class="btn-secondary"><i class="fas fa-database"></i> Access Dataset</a>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="system-grid">
-                <!-- Row 1: Source -->
-                <div class="sys-box collection" data-label="Code">
+    <section class="hero-architecture">
+        <div class="arch-container">
+            <!-- Step 1: Collection -->
+            <div class="arch-node">
+                <div class="node-box" data-tech="Python">
                     <i class="fab fa-github"></i>
-                    <span>Collection</span>
+                    <span>Collection<br>Repo</span>
                 </div>
+            </div>
 
-                <div class="sys-arrow-down"><i class="fas fa-arrow-down"></i></div>
+            <!-- Connector -->
+            <div class="arch-connector">
+                <div class="line"></div>
+                <div class="label">Daily Cron</div>
+                <i class="fas fa-chevron-right arrow-head"></i>
+            </div>
 
-                <!-- Row 2: Ops -->
-                <div class="sys-box ops" data-label="Ops">
+            <!-- Step 2: Actions -->
+            <div class="arch-node">
+                <div class="node-box" data-tech="Actions">
                     <i class="fab fa-github-alt"></i>
-                    <span>Actions</span>
+                    <span>GitHub<br>Actions</span>
                 </div>
+            </div>
 
-                <div class="sys-arrow-down"><i class="fas fa-arrow-down"></i></div>
+            <!-- Connector -->
+            <div class="arch-connector">
+                <div class="line"></div>
+                <div class="label">Process</div>
+                <i class="fas fa-chevron-right arrow-head"></i>
+            </div>
 
-                <!-- Row 3: Storage & Viz -->
-                <div class="sys-split">
-                    <div class="sys-box r2" data-label="Storage">
+            <!-- Step 3: Branching (R2 / W&B) -->
+            <div class="arch-branch">
+                <div class="branch-nodes">
+                    <div class="node-box small" data-tech="Storage">
                         <i class="fas fa-cloud"></i>
                         <span>R2</span>
                     </div>
-                    <div class="sys-box wandb" data-label="Viz">
+                    <div class="node-box small" data-tech="Viz">
                         <img src="https://raw.githubusercontent.com/wandb/assets/main/wandb-logo-yellow.png" alt="W&B"
                             class="wandb-icon">
                         <span>W&B</span>
                     </div>
                 </div>
+            </div>
 
-                <div class="sys-arrow-down"><i class="fas fa-arrow-down"></i></div>
+            <!-- Connector -->
+            <div class="arch-connector">
+                <div class="line"></div>
+                <div class="label">Version</div>
+                <i class="fas fa-chevron-right arrow-head"></i>
+            </div>
 
-                <!-- Row 4: Destination -->
-                <div class="sys-box dataset" data-label="Data">
+            <!-- Step 4: Dataset -->
+            <div class="arch-node">
+                <div class="node-box" data-tech="DVC">
                     <i class="fas fa-database"></i>
-                    <span>Dataset</span>
+                    <span>Dataset<br>Repo</span>
                 </div>
             </div>
         </div>
