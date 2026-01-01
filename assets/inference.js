@@ -31,7 +31,19 @@ async function initModel() {
             executionProviders: ['wasm']
         });
         console.log("✅ Model loaded successfully!");
-        document.getElementById("model-status").innerText = "Model Ready";
+        // Fetch Metadata
+        let versionText = "";
+        try {
+            const resp = await fetch('./assets/model_metadata.json');
+            if (resp.ok) {
+                const meta = await resp.json();
+                versionText = ` (${meta.version})`;
+            }
+        } catch (e) {
+            console.warn("Metadata load failed", e);
+        }
+
+        document.getElementById("model-status").innerText = "Model Ready" + versionText;
         document.getElementById("model-status").classList.add("text-green-500");
 
         // Enable buttons

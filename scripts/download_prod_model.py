@@ -33,6 +33,17 @@ def download_prod_model():
         
         print(f"✅ Model saved to: {file_path}")
         
+        # Save Metadata
+        import json
+        metadata = {
+            "version": artifact.version,
+            "updated_at": artifact.updated_at,
+            "name": artifact.name
+        }
+        with open(assets_dir / "model_metadata.json", "w") as f:
+            json.dump(metadata, f, indent=2)
+        print(f"📝 Metadata saved to: {assets_dir / 'model_metadata.json'}")
+        
     except Exception as e:
         print(f"❌ Failed to download model: {e}")
         exit(1)
