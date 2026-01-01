@@ -2,6 +2,8 @@
 
 A modern, static landing page to showcase the MLOps pipeline and dataset.
 
+**[👉 Live Demo](https://youtube-thumbnails-mlops.github.io/youtube-thumbnails-site/)**
+
 ## Setup
 1. Open `index.html` in your browser to preview.
 2. Edit `style.css` to change colors/theme.
