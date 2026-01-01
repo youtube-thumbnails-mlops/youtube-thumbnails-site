@@ -11,11 +11,34 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
+    <!-- Navbar -->
+    <nav class="glass-nav">
+        <div class="logo-area" style="display: flex; flex-direction: column;">
+            <div class="logo">
+                <span class="gradient-text">YouTube</span> MLOps
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); opacity: 0.8; font-weight: 400;">
+                End-to-end Continous Learning Pipeline
+            </div>
+            <div style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; margin-top: 2px;">
+                Made by <a href="https://www.linkedin.com/in/daniele-acquaviva/" target="_blank"
+                    style="color: inherit; text-decoration: underline;">Daniele Acquaviva</a>
+            </div>
+        </div>
+        <div class="links">
+            <a href="https://github.com/youtube-thumbnails-mlops" target="_blank" class="btn-sm">
+                <i class="fab fa-github"></i> GitHub Repo
+            </a>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <section class="hero-architecture">
         <!-- SVG Layer for Curved Connections -->
@@ -30,9 +53,17 @@
                 </div>
             </div>
 
+            <!-- Node New: YouTube (Under Collection) -->
+            <div class="node-wrapper" style="grid-area: yt;">
+                <div class="node-box cloud" id="node-yt" data-tech="Source">
+                    <i class="fab fa-youtube" style="color: #FF0000;"></i>
+                    <span>YouTube</span>
+                </div>
+            </div>
+
             <!-- Node 2: S3 -->
             <div class="node-wrapper" style="grid-area: s3;">
-                <div class="node-box" id="node-s3" data-tech="S3/R2">
+                <div class="node-box cloud" id="node-s3" data-tech="S3/R2">
                     <i class="fas fa-cloud"></i>
                     <span>Object<br>Storage</span>
                 </div>
@@ -54,40 +85,60 @@
                 </div>
             </div>
 
+            <!-- Node 9: RunPod (Under Training) -->
+            <div class="node-wrapper" style="grid-area: runpod;">
+                <div class="node-box cloud" id="node-runpod" data-tech="GPU Cloud">
+                    <i class="fas fa-server"></i>
+                    <span>RunPod<br>GPU</span>
+                </div>
+            </div>
+
             <!-- Node 5: W&B -->
             <div class="node-wrapper" style="grid-area: wb;">
-                <div class="node-box" id="node-wb" data-tech="MLOps">
+                <div class="node-box cloud" id="node-wb" data-tech="MLOps">
                     <i class="fas fa-chart-line"></i>
                     <span>Weights &<br>Biases</span>
                 </div>
             </div>
 
-            <!-- Node 8: Human / Analytics (Above W&B) -->
+            <!-- Node 8: Testing Pipeline (Above W&B) -->
             <div class="node-wrapper" style="grid-area: human;">
-                <div class="node-box" id="node-human" data-tech="Team">
-                    <i class="fas fa-user-astronaut"></i>
-                    <span>Analytics &<br>Selection</span>
+                <div class="node-box" id="node-human" data-tech="CI/CD">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Testing<br>Pipeline</span>
+                </div>
+            </div>
+
+            <!-- Node New: Monitoring (Right of Testing) -->
+            <div class="node-wrapper" style="grid-area: mon;">
+                <div class="node-box cloud" id="node-mon" data-tech="Slack/Email">
+                    <i class="fas fa-bell"></i>
+                    <span>Monitoring<br>& Alerts</span>
                 </div>
             </div>
 
             <!-- Node 6: Browser Inference (Right) -->
             <div class="node-wrapper" style="grid-area: inf;">
                 <div class="inference-box" id="node-inf">
-                    <div class="inf-header">
-                        <i class="fab fa-chrome"></i> Browser (Static Client)
-                    </div>
 
-                    <div class="inf-preview" onclick="triggerUpload(this)">
+                    <!-- Desktop File Input -->
+                    <div class="inf-preview" onclick="document.getElementById('file-upload-desktop').click()">
                         <div class="placeholder">
                             <i class="fas fa-image"></i>
-                            <span>Upload Thumbnail</span>
+                            <span>Click to Upload</span>
                         </div>
                         <img src="" alt="Preview" class="preview-img" style="display: none;">
+                        <input type="file" id="file-upload-desktop" accept="image/*" hidden
+                            onchange="handleFileSelect(this)">
+                    </div>
+
+                    <div class="inf-controls-top" style="margin-bottom: 1rem;">
+                        <input type="text" placeholder="Title..." class="inf-text">
                     </div>
 
                     <div class="inf-controls">
                         <div class="inf-info"><small>Runs on User Laptop (ONNX)</small></div>
-                        <button class="btn-predict" onclick="simulatePrediction()">
+                        <button class="btn-predict" onclick="simulatePrediction(this)">
                             <i class="fas fa-bolt"></i> Predict score
                         </button>
                     </div>
@@ -98,48 +149,118 @@
                 </div>
             </div>
         </div>
+        </div>
+        </div>
     </section>
 
+    <!-- Mobile View -->
+    <section class="mobile-view" style="display: none;">
+        <div class="mobile-container">
+            <!-- 1. Inference Box First -->
+            <div class="inference-box mobile-inf-box">
+
+                <!-- Mobile File Input -->
+                <div class="inf-preview" onclick="document.getElementById('file-upload-mobile').click()">
+                    <div class="placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Tap to Upload</span>
+                    </div>
+                    <img src="" alt="Preview" class="preview-img" style="display: none;">
+                    <input type="file" id="file-upload-mobile" accept="image/*" hidden
+                        onchange="handleFileSelect(this)">
+                </div>
+
+                <div class="inf-controls-top" style="margin-bottom: 1rem;">
+                    <input type="text" placeholder="Title..." class="inf-text">
+                </div>
+
+                <div class="inf-controls">
+                    <div class="inf-info"><small>Runs on User Laptop (ONNX)</small></div>
+                    <button class="btn-predict" onclick="simulatePrediction(this)">
+                        <i class="fas fa-bolt"></i> Predict score
+                    </button>
+                </div>
+
+                <div class="inf-result" class="inf-result" style="display: none;">
+                    <span class="score-badge">--</span>
+                </div>
+            </div>
+
+            <!-- 2. Title -->
+            <h2 class="mobile-title" style="margin-top: 1rem;">MLOps Architecture</h2>
+
+            <!-- 3. Image (Click triggers modal) -->
+            <div class="mobile-diagram-img" onclick="openModal()">
+                <img src="assets/diagram-mobile.png" alt="MLOps Architecture Diagram">
+                <div class="tap-hint"><i class="fas fa-search-plus"></i> Tap to Zoom</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Modal -->
+    <div id="imgModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="img01" src="assets/diagram-mobile.png">
+    </div>
+
     <script>
-        // Sample Thumbnails to simulate upload
-        const SAMPLES = [
-            'https://img.youtube.com/vi/7T10n1jBeIA/maxresdefault.jpg', // MLOps video
-            'https://img.youtube.com/vi/2eWuYf-aZE4/maxresdefault.jpg', // Another tech video
-        ];
-
-        function triggerUpload(el) {
-            const img = el.querySelector('.preview-img');
-            const placeholder = el.querySelector('.placeholder');
-
-            // Random sample
-            const sample = SAMPLES[Math.floor(Math.random() * SAMPLES.length)];
-
-            img.src = sample;
-            img.style.display = 'block';
-            placeholder.style.display = 'none'; // Hide placeholder
-
-            // Add 'uploaded' state style
-            el.classList.add('has-image');
+        // Modal Logic
+        function openModal() {
+            document.getElementById('imgModal').style.display = "block";
         }
 
-        function simulatePrediction() {
-            const btn = document.querySelector('.btn-predict');
-            const resultBox = document.getElementById('inf-result');
-            const scoreBadge = resultBox.querySelector('.score-badge');
-            const preview = document.querySelector('.inf-preview');
+        function closeModal() {
+            document.getElementById('imgModal').style.display = "none";
+        }
+
+        // Close modal if user clicks outside image
+        window.onclick = function (event) {
+            const modal = document.getElementById('imgModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Helper to handle file selection
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                const container = input.closest('.inf-preview');
+
+                reader.onload = function (e) {
+                    const img = container.querySelector('.preview-img');
+                    const placeholder = container.querySelector('.placeholder');
+
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    container.classList.add('has-image');
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function simulatePrediction(btn) {
+            // Find parent container
+            const container = btn.closest('.inference-box');
+            const resultBox = container.querySelector('.inf-result');
+            const scoreBadge = container.querySelector('.score-badge');
+            const preview = container.querySelector('.inf-preview');
 
             if (!preview.classList.contains('has-image')) {
                 alert("Upload a thumbnail first!");
                 return;
             }
 
+            const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             btn.disabled = true;
             resultBox.style.display = 'none';
 
             setTimeout(() => {
                 const score = (Math.random() * (9.9 - 7.0) + 7.0).toFixed(1); // 7.0 to 9.9
-                btn.innerHTML = '<i class="fas fa-bolt"></i> Predict score';
+                btn.innerHTML = originalText;
                 btn.disabled = false;
 
                 scoreBadge.textContent = score;
@@ -149,9 +270,10 @@
 
                 resultBox.style.display = 'flex';
 
-                // Trigger visual "pulse" on W&B connection
-                // (Could add class to SVG line here)
-                drawConnections();
+                // Trigger visual "pulse" on W&B connection only if on desktop
+                if (window.innerWidth > 900) {
+                    drawConnections();
+                }
             }, 1000);
         }
 
@@ -208,9 +330,16 @@
                     ly = midY - 5;
 
                 } else if (type === 'straight') {
+                    // Vertical straight (default)
                     d = `M ${p1.x} ${p1.bottom} L ${p2.x} ${p2.top}`;
                     ly = (p1.bottom + p2.top) / 2;
                     lx = (p1.x + p2.x) / 2;
+
+                } else if (type === 'straight-horizontal') {
+                    // Horizontal straight (Left to Right)
+                    d = `M ${p1.right} ${p1.y} L ${p2.left} ${p2.y}`;
+                    ly = (p1.y + p2.y) / 2 - 10; // Slightly above line
+                    lx = (p1.right + p2.left) / 2;
 
                 } else if (type === 'loop') {
                     // Centered Loop: Arch above the box
@@ -228,7 +357,7 @@
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('d', d);
                 path.setAttribute('class', 'connection-line');
-                if (type === 'straight') path.style.strokeDasharray = "5,5";
+                if (type === 'straight-horizontal') path.style.strokeDasharray = "5,5";
                 svg.appendChild(path);
 
                 const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -260,19 +389,32 @@
             }
 
             // Draw all
+            // YouTube -> Collection (Download)
+            drawPath('node-yt', 'node-collection', 'step', 'Download');
+
             drawPath('node-collection', 'node-collection', 'loop', 'Daily Cron');
-            drawPath('node-collection', 'node-s3', 'curve', 'Raw', { x: 0, y: -5 });
+            drawPath('node-collection', 'node-s3', 'curve', 'Filter Data', { x: 0, y: -5 });
 
             // S3 -> WB
             drawPath('node-s3', 'node-wb', 'curve', 'Visualization', { x: 0, y: -5 });
 
-            drawPath('node-s3', 'node-dvc', 'step');
+            drawPath('node-s3', 'node-dvc', 'step', 'Dataset Versioning', { x: 5, y: -5 });
 
             // DVC -> Train: "On New Dataset Release". 'step' puts it on midY horizontal.
             // User wants it "more on left".
-            drawPath('node-dvc', 'node-train', 'step', 'On New Dataset Release', { x: -30, y: -5 });
+            drawPath('node-dvc', 'node-train', 'step', 'On New Dataset Release', { x: -10, y: -5 });
 
-            drawPath('node-train', 'node-wb', 'curve', 'Register', { x: 0, y: -5 });
+            // Train -> RunPod
+            drawPath('node-train', 'node-runpod', 'step', 'Submit Job', { x: 5, y: 0 });
+
+            // RunPod -> WB (Register)
+            drawPath('node-runpod', 'node-wb', 'curve', 'Register', { x: 0, y: -5 });
+
+            // Testing Pipeline Loop
+            drawPath('node-human', 'node-human', 'loop', 'On New Candidate Model', { x: 0, y: 0 });
+
+            // Testing -> Monitoring
+            drawPath('node-human', 'node-mon', 'straight-horizontal', 'Notify', { x: 0, y: 0 });
 
             // Human -> WB
             drawPath('node-human', 'node-wb', 'straight', 'Promote to Prod', { x: 10, y: 0 });

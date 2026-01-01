@@ -104,6 +104,8 @@ h3 {
     background: radial-gradient(circle at 50% 50%, rgba(0, 242, 234, 0.05) 0%, #050505 80%);
     width: 100%;
     overflow: hidden;
+    padding-top: 120px;
+    /* Offset for Fixed Navbar (Increased) */
 }
 
 .arch-container {
@@ -152,6 +154,14 @@ h3 {
     border-color: var(--accent-cyan);
     box-shadow: 0 0 30px rgba(0, 242, 234, 0.2);
     transform: translateY(-5px);
+}
+
+/* Cloud Shape Variation */
+.node-box.cloud {
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.03);
+    border-style: dashed;
+    border-width: 2px;
 }
 
 /* Branch Nodes (Stacked R2/W&B at same vertical slice) */
@@ -216,12 +226,14 @@ h3 {
     display: grid;
     /* Col | Space | S3/Stack | Space | WB | Space | Inf */
     grid-template-areas:
-        ".    .  .     .  human .  ."
-        "col  .  s3    .  wb    .  inf"
+        ".    .  .     .  .     .  ."
+        "col  .  s3    .  human .  mon"
         ".    .  v1    .  wb    .  inf"
-        ".    .  dvc   .  wb    .  inf"
+        "yt   .  dvc   .  wb    .  inf"
         ".    .  v2    .  wb    .  inf"
-        ".    .  train .  wb    .  inf";
+        ".    .  train .  wb    .  inf"
+        ".    .  v3    .  wb    .  inf"
+        ".    .  runpod.  wb    .  inf";
     grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr;
     grid-template-rows: auto auto 40px auto 40px auto;
     gap: 1rem;
@@ -246,23 +258,41 @@ h3 {
 /* Human Node Spanning */
 .node-wrapper[style*="human"] {
     grid-column: 5;
-    /* Center above W&B (col 5) */
-    grid-row: 1;
-    margin-bottom: 1rem;
-}
-
-/* W&B Node Spanning */
-.node-wrapper[style*="wb"] {
-    grid-row: 2 / span 5;
-    /* Spans main rows */
+    /* Aligned with S3 (row 2) */
+    grid-row: 2;
     align-self: center;
+    margin-bottom: 0;
 }
 
 /* Inference Node Spanning */
 .node-wrapper[style*="inf"] {
-    grid-row: 2 / span 5;
-    /* Spans main rows */
+    grid-row: 3 / span 6;
+    /* Spans remaining rows, pushed down by Mon */
     align-self: center;
+    /* Moves box down to center of span, aligning with WB */
+}
+
+/* Monitoring Node Spanning */
+.node-wrapper[style*="mon"] {
+    grid-area: mon;
+    align-self: center;
+}
+
+/* W&B Node Spanning */
+.node-wrapper[style*="wb"] {
+    grid-row: 3 / span 6;
+    /* Starts below human, Spans remaining rows (7-1=6) */
+    align-self: center;
+}
+
+/* RunPod Node Spanning */
+.node-wrapper[style*="runpod"] {
+    grid-area: runpod;
+}
+
+/* YouTube Node Spanning */
+.node-wrapper[style*="yt"] {
+    grid-area: yt;
 }
 
 /* Inference Box Styling */
@@ -552,33 +582,16 @@ h3 {
 */
 
 /* Reusing specific box colors */
-.node-box[data-tech="S3/R2"] {
-    border-color: rgba(243, 128, 32, 0.8);
+/* Reusing specific box colors */
+/* STANDARD NODES (Pieplines, etc.) - Cyan/Blueish */
+.node-box {
+    border-color: rgba(0, 242, 234, 0.4);
 }
 
-.node-box[data-tech="Git Ops"] {
-    border-color: #F1502F;
-}
-
-/* Git Orange */
-.node-box[data-tech="Python"] {
-    border-color: rgba(0, 242, 234, 0.3);
-}
-
-.node-box[data-tech="Cloudflare"] {
-    border-color: rgba(243, 128, 32, 0.5);
-}
-
-.node-box[data-tech="PyTorch"] {
-    border-color: rgba(238, 76, 44, 0.5);
-}
-
-.node-box[data-tech="MLOps"] {
-    border-color: rgba(255, 215, 0, 0.5);
-}
-
-.node-box[data-tech="Team"] {
-    border-color: #b0b0b0;
+/* CLOUD NODES (S3, RunPod, WB, YouTube) - Pink/Accent */
+.node-box.cloud {
+    border-color: rgba(255, 0, 85, 0.5);
+    /* accent-pink */
 }
 
 /* Shared Line Components */
@@ -620,29 +633,119 @@ h3 {
 
 /* Mobile Responsive */
 @media (max-width: 900px) {
-    .arch-grid-complex {
+    .hero-architecture {
+        display: none !important;
+    }
+
+    .mobile-view {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: radial-gradient(circle at 50% 50%, rgba(0, 242, 234, 0.05) 0%, #050505 80%);
+        padding: 8rem 1rem 2rem 1rem;
+        /* Top padding for fixed nav */
+    }
+
+    .mobile-container {
         display: flex;
-        /* Stack on mobile */
         flex-direction: column;
-        gap: 3rem;
+        align-items: center;
+        gap: 2rem;
+        width: 100%;
+        max-width: 500px;
     }
 
-    #connections-layer {
-        display: none;
-        /* Hide SVG connections on mobile */
-    }
-
-    /* Fallback mobile arrows if needed, or just stack */
-    .node-wrapper::after {
-        content: '↓';
-        display: block;
-        text-align: center;
-        margin-top: 1rem;
-        color: var(--text-secondary);
+    .mobile-title {
         font-size: 1.5rem;
+        text-align: center;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
-    .node-wrapper:last-child::after {
-        content: none;
+    .mobile-diagram-img {
+        width: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        position: relative;
     }
+
+    .mobile-diagram-img img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .tap-hint {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        pointer-events: none;
+    }
+
+    .mobile-inf-box {
+        width: 100%;
+    }
+}
+
+/* Modal (Image Viewer) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    width: 95%;
+    max-width: 1200px;
+    margin-top: 60px;
+    /* Space for close button */
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 242, 234, 0.2);
+}
+
+.close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 2001;
+    background: rgba(255, 255, 255, 0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.close:hover,
+.close:focus {
+    color: var(--accent-cyan);
+    background: rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+    cursor: pointer;
 }
