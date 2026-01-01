@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Thumbnails MLOps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="logo">YT<span class="highlight">MLOps</span></div>
+        <div class="links">
+            <a href="#stats">Stats</a>
+            <a href="#pipeline">Pipeline</a>
+            <a href="#stack">Stack</a>
+            <a href="https://github.com/youtube-thumbnails-mlops/youtube-thumbnails-dataset" class="btn-sm">Dataset</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge">v1.0 Production Ready</div>
+            <h1>Automated <span class="gradient-text">MLOps Pipeline</span><br>for YouTube Thumbnails</h1>
+            <p>A robust, daily-running pipeline collecting high-quality thumbnail data for multi-class classification.</p>
+            <div class="cta-group">
+                <a href="https://github.com/youtube-thumbnails-mlops/youtube-thumbnails-collection" class="btn-primary"><i class="fab fa-github"></i> View Collection Code</a>
+                <a href="https://github.com/youtube-thumbnails-mlops/youtube-thumbnails-dataset" class="btn-secondary"><i class="fas fa-database"></i> Access Dataset</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="card-stack">
+                <div class="card glass-card">
+                    <i class="fas fa-image"></i>
+                    <span>175k Images</span>
+                </div>
+                <div class="card glass-card">
+                    <i class="fas fa-layer-group"></i>
+                    <span>15 Categories</span>
+                </div>
+                <div class="card glass-card">
+                    <i class="fas fa-robot"></i>
+                    <span>Automated</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="stats-section">
+        <div class="stat-box">
+            <h3>15</h3>
+            <p>Categories</p>
+        </div>
+        <div class="stat-box">
+            <h3>7 Days</h3>
+            <p>Rolling Window</p>
+        </div>
+        <div class="stat-box">
+            <h3>Daily</h3>
+            <p>Updates</p>
+        </div>
+        <div class="stat-box">
+            <h3>100%</h3>
+            <p>Automated</p>
+        </div>
+    </section>
+
+    <!-- Pipeline Section -->
+    <section id="pipeline" class="pipeline-section">
+        <h2>The Pipeline</h2>
+        <div class="pipeline-flow">
+            <div class="step">
+                <div class="step-icon"><i class="fab fa-youtube"></i></div>
+                <h3>Fetch</h3>
+                <p>YouTube Data API v3 fetches fresh videos daily based on 15 categories.</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="step">
+                <div class="step-icon"><i class="fas fa-filter"></i></div>
+                <h3>Filter</h3>
+                <p>Strict quality gates: >10k subs, >0.01% view ratio, no shorts.</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="step">
+                <div class="step-icon"><i class="fas fa-server"></i></div>
+                <h3>Store</h3>
+                <p>Full-res to Cloudflare R2 (DVC) and compressed to W&B.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section id="stack" class="stack-section">
+        <h2>Tech Stack</h2>
+        <div class="stack-grid">
+            <div class="stack-item"><i class="fab fa-python"></i> Python</div>
+            <div class="stack-item"><i class="fas fa-cube"></i> DVC</div>
+            <div class="stack-item"><i class="fas fa-cloud"></i> Cloudflare R2</div>
+            <div class="stack-item"><img src="https://raw.githubusercontent.com/wandb/assets/main/wandb-logo-yellow.png" alt="W&B" style="height:20px; vertical-align:middle;"> Weights & Biases</div>
+            <div class="stack-item"><i class="fab fa-github-alt"></i> GitHub Actions</div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Built for the Open Source ML Community.</p>
+    </footer>
+</body>
+</html>
