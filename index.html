@@ -73,19 +73,30 @@
             <!-- Node 6: Inference Demo -->
             <div class="node-wrapper" style="grid-area: inf;">
                 <div class="inference-box" id="node-inf">
-                    <div class="inf-header"><i class="fas fa-rocket"></i> Live Inference</div>
-                    <div class="inf-inputs">
-                        <div class="file-upload">
-                            <i class="fas fa-image"></i>
-                            <span>Upload Thumb</span>
-                        </div>
-                        <input type="text" placeholder="Enter title..." class="inf-text">
+                    <div class="inf-header">
+                        <i class="fas fa-magic"></i> Live Prediction
                     </div>
-                    <button class="btn-predict" onclick="simulatePrediction()">
-                        Predict Score
-                    </button>
-                    <div class="inf-result" id="inf-result">
-                        <span class="score">--</span>
+
+                    <!-- Image Preview Area -->
+                    <div class="inf-preview" onclick="triggerUpload(this)">
+                        <div class="placeholder">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Upload Thumbnail</span>
+                        </div>
+                        <img src="" alt="Preview" class="preview-img" style="display: none;">
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="inf-controls">
+                        <input type="text" placeholder="Video Title..." class="inf-text">
+                        <button class="btn-predict" onclick="simulatePrediction()">
+                            Predict
+                        </button>
+                    </div>
+
+                    <!-- Result Overlay -->
+                    <div class="inf-result" id="inf-result" style="display: none;">
+                        <span class="score-badge">8.5</span>
                     </div>
                 </div>
             </div>
@@ -93,107 +104,148 @@
     </section>
 
     <script>
-        function connect(id1, id2, type = 'curve', label = null) {
-            const svg = document.getElementById('connections-layer');
-            const el1 = document.getElementById(id1);
-            const el2 = document.getElementById(id2);
+        // Sample Thumbnails to simulate upload
+        const SAMPLES = [
+            'https://img.youtube.com/vi/7T10n1jBeIA/maxresdefault.jpg', // MLOps video
+            'https://img.youtube.com/vi/2eWuYf-aZE4/maxresdefault.jpg', // Another tech video
+        ];
 
-            if (!el1 || !el2) return;
+        function triggerUpload(el) {
+            const img = el.querySelector('.preview-img');
+            const placeholder = el.querySelector('.placeholder');
 
-            const r1 = el1.getBoundingClientRect();
-            const r2 = el2.getBoundingClientRect();
-            const container = document.querySelector('.hero-architecture').getBoundingClientRect();
+            // Random sample
+            const sample = SAMPLES[Math.floor(Math.random() * SAMPLES.length)];
 
-            // Calculate centers relative to container
-            const x1 = r1.left + r1.width / 2 - container.left;
-            const y1 = r1.top + r1.height / 2 - container.top;
-            const x2 = r2.left + r2.width / 2 - container.left;
-            const y2 = r2.top + r2.height / 2 - container.top;
+            img.src = sample;
+            img.style.display = 'block';
+            placeholder.style.display = 'none'; // Hide placeholder
 
-            let pathD = '';
-
-            if (type === 'curve') {
-                const deltaX = x2 - x1;
-                // Control points for smooth curve
-                const c1x = x1 + deltaX * 0.5;
-                const c1y = y1;
-                const c2x = x2 - deltaX * 0.5;
-                const c2y = y2;
-                pathD = `M ${x1} ${y1} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${x2} ${y2}`;
-            } else if (type === 'step') {
-                // Vertical then Horizontal
-                const midY = (y1 + y2) / 2;
-                pathD = `M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}`;
-            }
-
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('d', pathD);
-            path.setAttribute('class', 'connection-line');
-            svg.appendChild(path);
-
-            // Add animating packet
-            const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            packet.setAttribute('r', '3');
-            packet.setAttribute('class', 'connection-packet');
-
-            // Animate motion along path
-            const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
-            animate.setAttribute('dur', '2s');
-            animate.setAttribute('repeatCount', 'indefinite');
-            animate.setAttribute('path', pathD);
-            packet.appendChild(animate);
-            svg.appendChild(packet);
-
-            // Label
-            if (label) {
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                // Simple midpoint
-                const midX = (x1 + x2) / 2;
-                const midY = (y1 + y2) / 2;
-                text.setAttribute('x', midX);
-                text.setAttribute('y', midY - 10);
-                text.setAttribute('class', 'connection-label');
-                text.setAttribute('text-anchor', 'middle');
-                text.textContent = label;
-                svg.appendChild(text);
-            }
-        }
-
-        function drawConnections() {
-            const svg = document.getElementById('connections-layer');
-            svg.innerHTML = ''; // Clear old
-
-            // 1. Col -> S3
-            connect('node-collection', 'node-s3', 'curve', 'Raw');
-            // 2. S3 -> W&B
-            connect('node-s3', 'node-wb', 'curve', 'Viz');
-            // 3. S3 -> DVC
-            connect('node-s3', 'node-dvc', 'step');
-            // 4. DVC -> Train
-            connect('node-dvc', 'node-train', 'step', 'New Release');
-            // 5. Train -> W&B
-            connect('node-train', 'node-wb', 'curve', 'Register');
-            // 6. W&B -> Inference
-            connect('node-wb', 'node-inf', 'step', 'Serve Model');
+            // Add 'uploaded' state style
+            el.classList.add('has-image');
         }
 
         function simulatePrediction() {
             const btn = document.querySelector('.btn-predict');
-            const result = document.getElementById('inf-result');
+            const resultBox = document.getElementById('inf-result');
+            const scoreBadge = resultBox.querySelector('.score-badge');
+            const preview = document.querySelector('.inf-preview');
 
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+            if (!preview.classList.contains('has-image')) {
+                alert("Please click the box to 'upload' an image first!");
+                return;
+            }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             btn.disabled = true;
+            resultBox.style.display = 'none';
 
             setTimeout(() => {
-                const score = (Math.random() * 5 + 5).toFixed(1); // 5.0 to 10.0
-                btn.innerHTML = 'Predict Score';
+                const score = (Math.random() * (9.9 - 7.0) + 7.0).toFixed(1); // 7.0 to 9.9
+                btn.innerHTML = 'Predict';
                 btn.disabled = false;
-                result.innerHTML = `<span class="score-label">Viral Score:</span> <span class="score-value">${score}/10</span>`;
-                drawConnections(); // Redraw in case layout shifted
-            }, 1500);
+
+                scoreBadge.textContent = score;
+                // Color code
+                if (score > 9) scoreBadge.style.background = 'var(--accent-cyan)';
+                else scoreBadge.style.background = 'var(--accent-pink)'; // Good but not great
+
+                resultBox.style.display = 'flex';
+
+                // Trigger visual "pulse" on W&B connection
+                // (Could add class to SVG line here)
+            }, 1200);
         }
 
-        window.addEventListener('load', drawConnections);
-        window.addEventListener('resize', drawConnections);
+        // --- Improved Connection Logic ---
+        function drawConnections() {
+            const svg = document.getElementById('connections-layer');
+            const container = document.querySelector('.hero-architecture');
+
+            if (!svg || !container) return;
+
+            // Clear old paths
+            while (svg.firstChild) {
+                svg.removeChild(svg.firstChild);
+            }
+
+            const cRect = container.getBoundingClientRect();
+
+            // Helper to get center relative to container
+            function getCenter(id) {
+                const el = document.getElementById(id);
+                if (!el) return null;
+                const r = el.getBoundingClientRect();
+                return {
+                    x: (r.left + r.width / 2) - cRect.left,
+                    y: (r.top + r.height / 2) - cRect.top
+                };
+            }
+
+            function drawPath(id1, id2, type = 'curve', label = null) {
+                const p1 = getCenter(id1);
+                const p2 = getCenter(id2);
+                if (!p1 || !p2) return;
+
+                let d = '';
+                if (type === 'curve') {
+                    const deltaX = p2.x - p1.x;
+                    const c1x = p1.x + deltaX * 0.5;
+                    const c2x = p2.x - deltaX * 0.5;
+                    d = `M ${p1.x} ${p1.y} C ${c1x} ${p1.y}, ${c2x} ${p2.y}, ${p2.x} ${p2.y}`;
+                } else if (type === 'step') {
+                    const midY = (p1.y + p2.y) / 2;
+                    d = `M ${p1.x} ${p1.y} L ${p1.x} ${midY} L ${p2.x} ${midY} L ${p2.x} ${p2.y}`;
+                }
+
+                // Create Path
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'connection-line');
+                svg.appendChild(path);
+
+                // Create Packet
+                const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                packet.setAttribute('r', '3');
+                packet.setAttribute('class', 'connection-packet');
+                const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+                anim.setAttribute('dur', '2.5s');
+                anim.setAttribute('repeatCount', 'indefinite');
+                anim.setAttribute('path', d);
+                packet.appendChild(anim);
+                svg.appendChild(packet);
+
+                // Label
+                if (label) {
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    const mx = (p1.x + p2.x) / 2;
+                    const my = (p1.y + p2.y) / 2;
+                    text.setAttribute('x', mx);
+                    text.setAttribute('y', my - 8);
+                    text.setAttribute('class', 'connection-label');
+                    text.setAttribute('text-anchor', 'middle');
+                    text.textContent = label;
+                    svg.appendChild(text);
+                }
+            }
+
+            // Draw all
+            drawPath('node-collection', 'node-s3', 'curve', 'Raw');
+            drawPath('node-s3', 'node-wb', 'curve', 'Viz');
+            drawPath('node-s3', 'node-dvc', 'step');
+            drawPath('node-dvc', 'node-train', 'step', 'New Release');
+            drawPath('node-train', 'node-wb', 'curve', 'Register');
+            drawPath('node-wb', 'node-inf', 'step', 'Deploy');
+        }
+
+        // Wait for layout to be stable
+        window.addEventListener('load', () => {
+            requestAnimationFrame(drawConnections);
+        });
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(drawConnections);
+        });
+        // Periodic check to ensure they don't disappear
+        setInterval(drawConnections, 2000);
     </script>
 </body>
