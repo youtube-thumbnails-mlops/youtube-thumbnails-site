@@ -213,6 +213,14 @@
         <img class="modal-content" id="img01" src="assets/diagram-mobile.png">
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast-container">
+        <div id="toast" class="toast">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Warning message here</span>
+        </div>
+    </div>
+
     <script>
         // Modal Logic
         function openModal() {
@@ -221,6 +229,16 @@
 
         function closeModal() {
             document.getElementById('imgModal').style.display = "none";
+        }
+
+        // Toast Logic
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.querySelector('span').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
         // Close modal if user clicks outside image
@@ -263,7 +281,7 @@
             const imgElement = container.querySelector('.preview-img');
 
             if (!preview.classList.contains('has-image')) {
-                alert("Upload a thumbnail first!");
+                showToast("Please upload a thumbnail first!");
                 return;
             }
 
@@ -300,7 +318,7 @@
                 }
 
             } catch (e) {
-                alert("Inference Failed: " + e.message);
+                showToast("Inference Failed: " + e.message);
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
@@ -463,7 +481,8 @@
             drawPath('node-human', 'node-runpod', 'curve', 'Submit Job', { x: 0, y: 0 });
 
             // WB -> Inf: 'Deploy Static'. Center it.
-            drawPath('node-wb', 'node-inf', 'step', 'Deploy', { x: 0, y: -5 });
+            // Move label up significantly (-25) to avoid overlap with box border
+            drawPath('node-wb', 'node-inf', 'step', 'Deploy', { x: 0, y: -25 });
         }
 
 

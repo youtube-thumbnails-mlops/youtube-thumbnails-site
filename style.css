@@ -757,3 +757,39 @@ h3 {
     text-decoration: none;
     cursor: pointer;
 }
+/* Toast Notification */
+.toast-container {
+    position: fixed;
+    top: 100px; /* Below navbar */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3000;
+    pointer-events: none;
+}
+
+.toast {
+    background: rgba(20, 20, 25, 0.95);
+    color: var(--text-primary);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid var(--accent-pink);
+    box-shadow: 0 4px 20px rgba(255, 0, 85, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast i {
+    color: var(--accent-pink);
+    font-size: 1.1rem;
+}
