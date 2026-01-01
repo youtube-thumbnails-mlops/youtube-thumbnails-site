@@ -70,33 +70,39 @@
                 </div>
             </div>
 
-            <!-- Node 6: Inference Demo -->
+            <!-- Node 8: Human / Analytics (Above W&B) -->
+            <div class="node-wrapper" style="grid-area: human;">
+                <div class="node-box" id="node-human" data-tech="Team">
+                    <i class="fas fa-user-astronaut"></i>
+                    <span>Analytics &<br>Selection</span>
+                    <div class="tooltip">Promote to Prod</div>
+                </div>
+            </div>
+
+            <!-- Node 6: Browser Inference (Right) -->
             <div class="node-wrapper" style="grid-area: inf;">
                 <div class="inference-box" id="node-inf">
                     <div class="inf-header">
-                        <i class="fas fa-magic"></i> Live Prediction
+                        <i class="fab fa-chrome"></i> Browser (Static Client)
                     </div>
 
-                    <!-- Image Preview Area -->
                     <div class="inf-preview" onclick="triggerUpload(this)">
                         <div class="placeholder">
-                            <i class="fas fa-cloud-upload-alt"></i>
+                            <i class="fas fa-image"></i>
                             <span>Upload Thumbnail</span>
                         </div>
                         <img src="" alt="Preview" class="preview-img" style="display: none;">
                     </div>
 
-                    <!-- Controls -->
                     <div class="inf-controls">
-                        <input type="text" placeholder="Video Title..." class="inf-text">
+                        <div class="inf-info"><small>Runs on User Laptop (ONNX)</small></div>
                         <button class="btn-predict" onclick="simulatePrediction()">
-                            Predict
+                            <i class="fas fa-bolt"></i> Predict score
                         </button>
                     </div>
 
-                    <!-- Result Overlay -->
                     <div class="inf-result" id="inf-result" style="display: none;">
-                        <span class="score-badge">8.5</span>
+                        <span class="score-badge">--</span>
                     </div>
                 </div>
             </div>
@@ -132,17 +138,17 @@
             const preview = document.querySelector('.inf-preview');
 
             if (!preview.classList.contains('has-image')) {
-                alert("Please click the box to 'upload' an image first!");
+                alert("Upload a thumbnail first!");
                 return;
             }
 
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             btn.disabled = true;
             resultBox.style.display = 'none';
 
             setTimeout(() => {
                 const score = (Math.random() * (9.9 - 7.0) + 7.0).toFixed(1); // 7.0 to 9.9
-                btn.innerHTML = 'Predict';
+                btn.innerHTML = '<i class="fas fa-bolt"></i> Predict score';
                 btn.disabled = false;
 
                 scoreBadge.textContent = score;
@@ -154,7 +160,8 @@
 
                 // Trigger visual "pulse" on W&B connection
                 // (Could add class to SVG line here)
-            }, 1200);
+                drawConnections();
+            }, 1000);
         }
 
         // --- Improved Connection Logic ---
@@ -178,7 +185,8 @@
                 const r = el.getBoundingClientRect();
                 return {
                     x: (r.left + r.width / 2) - cRect.left,
-                    y: (r.top + r.height / 2) - cRect.top
+                    y: (r.top + r.height / 2) - cRect.top,
+                    w: r.width, h: r.height
                 };
             }
 
@@ -196,6 +204,15 @@
                 } else if (type === 'step') {
                     const midY = (p1.y + p2.y) / 2;
                     d = `M ${p1.x} ${p1.y} L ${p1.x} ${midY} L ${p2.x} ${midY} L ${p2.x} ${p2.y}`;
+                } else if (type === 'loop') {
+                    // Better Daily Loop
+                    const r = 30;
+                    const startX = p1.x;
+                    const startY = p1.y - p1.h / 2; // Top of box
+                    // A loop that goes up, left, down, back to start
+                    d = `M ${startX} ${startY} 
+                          C ${startX} ${startY - 50}, ${startX - 60} ${startY - 50}, ${startX - 60} ${startY} 
+                          C ${startX - 60} ${startY + 40}, ${startX - 10} ${startY + 10}, ${startX - 10} ${startY}`;
                 }
 
                 // Create Path
@@ -218,8 +235,13 @@
                 // Label
                 if (label) {
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    const mx = (p1.x + p2.x) / 2;
-                    const my = (p1.y + p2.y) / 2;
+                    let mx = (p1.x + p2.x) / 2;
+                    let my = (p1.y + p2.y) / 2;
+
+                    if (type === 'loop') {
+                        mx = p1.x - 30; my = p1.y - 35;
+                    }
+
                     text.setAttribute('x', mx);
                     text.setAttribute('y', my - 8);
                     text.setAttribute('class', 'connection-label');
@@ -230,12 +252,14 @@
             }
 
             // Draw all
+            drawPath('node-collection', 'node-collection', 'loop', 'Daily Cron');
             drawPath('node-collection', 'node-s3', 'curve', 'Raw');
-            drawPath('node-s3', 'node-wb', 'curve', 'Viz');
+            drawPath('node-s3', 'node-wb', 'curve', 'Visualization');
             drawPath('node-s3', 'node-dvc', 'step');
             drawPath('node-dvc', 'node-train', 'step', 'New Release');
             drawPath('node-train', 'node-wb', 'curve', 'Register');
-            drawPath('node-wb', 'node-inf', 'step', 'Deploy');
+            drawPath('node-human', 'node-wb', 'step', 'Select Best');
+            drawPath('node-wb', 'node-inf', 'step', 'Deploy Static');
         }
 
         // Wait for layout to be stable

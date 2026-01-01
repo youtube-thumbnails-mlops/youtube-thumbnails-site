@@ -216,13 +216,14 @@ h3 {
     display: grid;
     /* Col | Space | S3/Stack | Space | WB | Space | Inf */
     grid-template-areas:
-        "col  .  s3   .  wb  .  inf"
-        ".    .  v1   .  wb  .  inf"
-        ".    .  dvc  .  wb  .  inf"
-        ".    .  v2   .  wb  .  inf"
-        ".    .  train . wb  .  inf";
+        ".    .  human .  .   .  ."
+        "col  .  s3    .  wb  .  inf"
+        ".    .  v1    .  wb  .  inf"
+        ".    .  dvc   .  wb  .  inf"
+        ".    .  v2    .  wb  .  inf"
+        ".    .  train .  wb  .  inf";
     grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr;
-    grid-template-rows: auto 40px auto 40px auto;
+    grid-template-rows: auto auto 40px auto 40px auto;
     gap: 1rem;
     align-items: center;
     justify-items: center;
@@ -242,17 +243,25 @@ h3 {
     width: 100%;
 }
 
+/* Human Node Spanning */
+.node-wrapper[style*="human"] {
+    grid-column: 5;
+    /* Center above W&B (col 5) */
+    grid-row: 1;
+    margin-bottom: 1rem;
+}
+
 /* W&B Node Spanning */
 .node-wrapper[style*="wb"] {
-    grid-row: 1 / span 5;
-    /* Span full height centered */
+    grid-row: 2 / span 5;
+    /* Spans main rows */
     align-self: center;
 }
 
 /* Inference Node Spanning */
 .node-wrapper[style*="inf"] {
-    grid-row: 1 / span 5;
-    /* Span full height centered */
+    grid-row: 2 / span 5;
+    /* Spans main rows */
     align-self: center;
 }
 
@@ -263,7 +272,8 @@ h3 {
     border: 1px solid var(--accent-pink);
     border-radius: 16px;
     padding: 1.5rem;
-    width: 240px;
+    width: 260px;
+    /* Bigger */
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
@@ -277,20 +287,22 @@ h3 {
 }
 
 .inf-header {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    font-weight: 600;
+    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.8rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 0.8rem;
+    padding-bottom: 1rem;
 }
 
 .inf-header i {
-    color: var(--accent-pink);
+    color: #f2a900;
+    /* Chrome Yellowish */
+    font-size: 1.2rem;
 }
 
 /* Image Preview / Upload Area */
@@ -320,11 +332,11 @@ h3 {
     align-items: center;
     gap: 0.5rem;
     color: var(--text-secondary);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 .inf-preview .placeholder i {
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: var(--text-secondary);
 }
 
@@ -342,7 +354,13 @@ h3 {
 .inf-controls {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 1rem;
+}
+
+.inf-info {
+    text-align: center;
+    color: var(--text-secondary);
+    opacity: 0.7;
 }
 
 .inf-text {
@@ -364,25 +382,26 @@ h3 {
 .btn-predict {
     background: var(--primary-gradient);
     border: none;
-    border-radius: 6px;
-    padding: 0.8rem;
+    border-radius: 8px;
+    padding: 1rem;
     color: white;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     font-family: var(--font-heading);
     letter-spacing: 0.05em;
     transition: all 0.2s;
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.8rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn-predict:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 242, 234, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 242, 234, 0.5);
 }
 
 .btn-predict:disabled {
@@ -398,17 +417,17 @@ h3 {
     justify-content: center;
     align-items: center;
     padding-top: 0.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 2rem;
 }
 
 .score-badge {
     background: var(--accent-cyan);
     color: #000;
-    padding: 0.2rem 0.8rem;
-    border-radius: 4px;
+    padding: 0.4rem 1.2rem;
+    border-radius: 6px;
     font-weight: 800;
-    font-size: 1.2rem;
-    box-shadow: 0 0 10px var(--accent-cyan);
+    font-size: 1.5rem;
+    box-shadow: 0 0 15px var(--accent-cyan);
 }
 
 /* Self Loop */
@@ -556,6 +575,10 @@ h3 {
     border-color: rgba(255, 215, 0, 0.5);
 }
 
+.node-box[data-tech="Team"] {
+    border-color: #b0b0b0;
+}
+
 /* Shared Line Components */
 /* These are likely deprecated by SVG connections, but kept if used elsewhere */
 .line {
@@ -610,8 +633,9 @@ h3 {
     /* Fallback mobile arrows if needed, or just stack */
     .node-wrapper::after {
         content: '↓';
-        position: absolute;
-        bottom: -2rem;
+        display: block;
+        text-align: center;
+        margin-top: 1rem;
         color: var(--text-secondary);
         font-size: 1.5rem;
     }
