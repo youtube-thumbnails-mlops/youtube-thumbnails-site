@@ -18,72 +18,96 @@
 <body>
     <!-- Hero Section -->
     <section class="hero-architecture">
-        <div class="arch-container">
-            <!-- Step 1: Collection -->
-            <div class="arch-node">
+        <div class="arch-grid-complex">
+            <!-- Node 1: Collection (Top Left) -->
+            <div class="node-wrapper" style="grid-area: col;">
+                <div class="self-loop">
+                    <div class="loop-arrow"><i class="fas fa-undo"></i> Daily</div>
+                </div>
                 <div class="node-box" data-tech="Python">
-                    <i class="fab fa-github"></i>
+                    <i class="fas fa-terminal"></i>
                     <span>Collection<br>Pipeline</span>
-                    <div class="tooltip">Daily Data Ingestion</div>
+                    <div class="tooltip">Daily Cron Job</div>
                 </div>
             </div>
 
-            <!-- Connector -->
-            <div class="arch-connector">
+            <!-- Connector: Col -> S3 -->
+            <div class="connector-horizontal" style="grid-area: c1;">
                 <div class="line">
                     <div class="data-packet"></div>
                 </div>
-                <div class="label">Store</div>
+                <div class="label">Raw</div>
                 <i class="fas fa-chevron-right arrow-head"></i>
             </div>
 
-            <!-- Step 2: R2 (Storage) -->
-            <div class="arch-node">
-                <div class="node-box" data-tech="Cloudflare">
-                    <i class="fas fa-cloud"></i>
+            <!-- Node 2: S3 (Top Center) -->
+            <div class="node-wrapper" style="grid-area: s3;">
+                <div class="node-box" data-tech="S3/R2">
+                    <i class="fas fa-database"></i> <!-- bucket icon? database is fine -->
                     <span>Object<br>Storage</span>
-                    <div class="tooltip">Raw Data (R2)</div>
+                    <div class="tooltip">S3 Compatible</div>
                 </div>
             </div>
 
-            <!-- Connector -->
-            <div class="arch-connector">
+            <!-- Connector: S3 -> W&B (Top Right) -->
+            <div class="connector-horizontal" style="grid-area: c2;">
                 <div class="line">
                     <div class="data-packet" style="animation-delay: 1s;"></div>
                 </div>
-                <div class="label">Load</div>
+                <div class="label">Viz</div>
                 <i class="fas fa-chevron-right arrow-head"></i>
             </div>
 
-            <!-- Step 3: Training -->
-            <div class="arch-node">
+            <!-- Node 5: W&B (Right Column, Spanning) -->
+            <div class="node-wrapper" style="grid-area: wb;">
+                <div class="node-box" data-tech="MLOps">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Weights &<br>Biases</span>
+                    <div class="tooltip">Registry & Viz</div>
+                </div>
+            </div>
+
+            <!-- Connector: S3 -> DVC (Vertical Down) -->
+            <div class="connector-vertical" style="grid-area: v1;">
+                <div class="line-vertical">
+                    <div class="data-packet-vertical"></div>
+                </div>
+                <i class="fas fa-chevron-down arrow-head-vertical"></i>
+            </div>
+
+            <!-- Node 3: DVC (Middle Center) -->
+            <div class="node-wrapper" style="grid-area: dvc;">
+                <div class="node-box" data-tech="Git Ops">
+                    <i class="fas fa-code-branch"></i>
+                    <span>DVC<br>Dataset</span>
+                    <div class="tooltip">Data Versioning</div>
+                </div>
+            </div>
+
+            <!-- Connector: DVC -> Training (Vertical Down) -->
+            <div class="connector-vertical" style="grid-area: v2;">
+                <div class="line-vertical">
+                    <div class="data-packet-vertical" style="animation-delay: 1.5s;"></div>
+                </div>
+                <i class="fas fa-chevron-down arrow-head-vertical"></i>
+            </div>
+
+            <!-- Node 4: Training (Bottom Center) -->
+            <div class="node-wrapper" style="grid-area: train;">
                 <div class="node-box" data-tech="PyTorch">
                     <i class="fas fa-brain"></i>
                     <span>Training<br>Pipeline</span>
-                    <div class="tooltip">Model Training Repo</div>
+                    <div class="tooltip">Model Training</div>
                 </div>
             </div>
 
-            <!-- Connector -->
-            <div class="arch-connector">
-                <div class="line">
-                    <div class="data-packet" style="animation-delay: 2s;"></div>
+            <!-- Connector: Training -> W&B (Bottom Right Curve) -->
+            <div class="connector-elbow" style="grid-area: c3;">
+                <div class="elbow-line">
+                    <div class="data-packet-elbow"></div>
                 </div>
-                <div class="label">Registry</div>
-                <i class="fas fa-chevron-right arrow-head"></i>
-            </div>
-
-            <!-- Step 4: W&B -->
-            <div class="arch-node">
-                <div class="node-box" data-tech="MLOps">
-                    <img src="https://raw.githubusercontent.com/wandb/assets/main/wandb-logo-yellow.png" alt="W&B"
-                        class="wandb-icon">
-                    <span>Weights &<br>Biases</span>
-                    <div class="tooltip">Model Registry & Viz</div>
-                </div>
+                <div class="label-elbow">Register</div>
             </div>
         </div>
     </section>
 </body>
-
-</html>
