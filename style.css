@@ -231,7 +231,7 @@ h3 {
         ".    .  v1    .  wb    .  inf"
         "yt   .  dvc   .  wb    .  inf"
         ".    .  v2    .  wb    .  inf"
-        ".    .  train .  wb    .  inf"
+        "reg  .  train .  wb    .  inf"
         ".    .  v3    .  wb    .  inf"
         ".    .  runpod.  wb    .  inf";
     grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr;
@@ -253,6 +253,11 @@ h3 {
     justify-content: center;
     z-index: 2;
     width: 100%;
+}
+
+/* Container Registry Node Spanning */
+.node-wrapper[style*="reg"] {
+    grid-area: reg;
 }
 
 /* Human Node Spanning */

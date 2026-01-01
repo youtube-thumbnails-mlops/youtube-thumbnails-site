@@ -61,6 +61,14 @@
                 </div>
             </div>
 
+            <!-- Node New: Container Registry (Left of Training) -->
+            <div class="node-wrapper" style="grid-area: reg;">
+                <div class="node-box cloud" id="node-reg" data-tech="Docker Hub">
+                    <i class="fab fa-docker"></i>
+                    <span>Container<br>Registry</span>
+                </div>
+            </div>
+
             <!-- Node 2: S3 -->
             <div class="node-wrapper" style="grid-area: s3;">
                 <div class="node-box cloud" id="node-s3" data-tech="S3/R2">
@@ -403,6 +411,10 @@
             // DVC -> Train: "On New Dataset Release". 'step' puts it on midY horizontal.
             // User wants it "more on left".
             drawPath('node-dvc', 'node-train', 'step', 'On New Dataset Release', { x: -10, y: -5 });
+
+            // Registry -> Train: "Build" (Actually, usually it's Code -> Build -> Registry. But per user request:)
+            // Left of Train. 
+            drawPath('node-reg', 'node-train', 'step', 'Build', { x: 0, y: -5 });
 
             // Train -> RunPod
             drawPath('node-train', 'node-runpod', 'step', 'Submit Job', { x: 5, y: 0 });
