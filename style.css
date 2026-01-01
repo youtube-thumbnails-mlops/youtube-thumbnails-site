@@ -307,7 +307,8 @@ h3 {
     border: 1px solid var(--accent-pink);
     border-radius: 16px;
     padding: 1.5rem;
-    width: 260px;
+    width: 320px;
+    /* Bigger */
     /* Bigger */
     display: flex;
     flex-direction: column;
@@ -354,6 +355,8 @@ h3 {
     overflow: hidden;
     position: relative;
     transition: all 0.2s;
+    padding: 10px;
+    /* Pad image inside box */
 }
 
 .inf-preview:hover {
@@ -378,7 +381,7 @@ h3 {
 .inf-preview img.preview-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .inf-preview.has-image {

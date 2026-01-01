@@ -33,6 +33,13 @@ async function initModel() {
         console.log("✅ Model loaded successfully!");
         document.getElementById("model-status").innerText = "Model Ready";
         document.getElementById("model-status").classList.add("text-green-500");
+
+        // Enable buttons
+        const btns = document.querySelectorAll(".btn-predict");
+        btns.forEach(b => {
+            b.disabled = false;
+            b.classList.add("btn-active"); // Optional visual cue
+        });
     } catch (e) {
         console.error("❌ Failed to load model:", e);
         document.getElementById("model-status").innerText = "Model Failed";

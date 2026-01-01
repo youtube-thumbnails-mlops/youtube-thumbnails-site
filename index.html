@@ -143,17 +143,15 @@
                             onchange="handleFileSelect(this)">
                     </div>
 
-                    <div class="inf-controls-top" style="margin-bottom: 1rem;">
-                        <input type="text" placeholder="Title..." class="inf-text">
-                    </div>
+
 
                     <div class="inf-controls">
                         <div class="inf-info"><small>Runs on User Laptop (ONNX)</small></div>
                         <!-- Model Status Indicator -->
                         <div id="model-status" style="font-size: 0.7em; margin-bottom: 5px; opacity: 0.7;">Loading
                             Model...</div>
-                        <button class="btn-predict" onclick="predictScore(this)">
-                            <i class="fas fa-bolt"></i> Predict score
+                        <button class="btn-predict" onclick="predictScore(this)" disabled>
+                            <i class="fas fa-bolt"></i> Predict Category
                         </button>
                     </div>
 
@@ -184,14 +182,12 @@
                         onchange="handleFileSelect(this)">
                 </div>
 
-                <div class="inf-controls-top" style="margin-bottom: 1rem;">
-                    <input type="text" placeholder="Title..." class="inf-text">
-                </div>
+
 
                 <div class="inf-controls">
                     <div class="inf-info"><small>Runs on User Laptop (ONNX)</small></div>
-                    <button class="btn-predict" onclick="simulatePrediction(this)">
-                        <i class="fas fa-bolt"></i> Predict score
+                    <button class="btn-predict" onclick="predictScore(this)" disabled>
+                        <i class="fas fa-bolt"></i> Predict Category
                     </button>
                 </div>
 
