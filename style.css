@@ -177,7 +177,29 @@ h3 {
     font-size: 1.2rem;
 }
 
-/* Connectors & Animation */
+/* Specific Box Colors and Labels based on Data-Tech */
+.node-box[data-tech="Python"] {
+    border-color: rgba(0, 242, 234, 0.3);
+}
+
+/* Cyan */
+.node-box[data-tech="Cloudflare"] {
+    border-color: rgba(243, 128, 32, 0.5);
+}
+
+/* Orange */
+.node-box[data-tech="PyTorch"] {
+    border-color: rgba(238, 76, 44, 0.5);
+}
+
+/* Red/Orange */
+.node-box[data-tech="MLOps"] {
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+/* Gold */
+
+/* Connectors */
 .arch-connector {
     display: flex;
     flex-direction: column;
@@ -311,6 +333,35 @@ h3 {
         top: 45px;
         left: 0;
         transform: rotate(90deg);
+    }
+
+    .data-packet {
+        width: 2px;
+        height: 40px;
+        background: linear-gradient(180deg, transparent, var(--accent-cyan), var(--accent-pink));
+        left: 0;
+        top: -40px;
+        animation: flowVertical 2s linear infinite;
+    }
+
+    @keyframes flowVertical {
+        0% {
+            top: -40px;
+            opacity: 0;
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        80% {
+            opacity: 1;
+        }
+
+        100% {
+            top: 100%;
+            opacity: 0;
+        }
     }
 
     .sys-split,

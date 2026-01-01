@@ -16,17 +16,6 @@
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="glass-nav">
-        <div class="logo">YT<span class="highlight">MLOps</span></div>
-        <div class="links">
-            <a href="#stats">Stats</a>
-            <a href="#pipeline">Pipeline</a>
-            <a href="#stack">Stack</a>
-            <a href="https://github.com/youtube-thumbnails-mlops/youtube-thumbnails-dataset" class="btn-sm">Dataset</a>
-        </div>
-    </nav>
-
     <!-- Hero Section -->
     <section class="hero-architecture">
         <div class="arch-container">
@@ -34,8 +23,8 @@
             <div class="arch-node">
                 <div class="node-box" data-tech="Python">
                     <i class="fab fa-github"></i>
-                    <span>Collection<br>Repo</span>
-                    <div class="tooltip">Fetching 15 Categories via API</div>
+                    <span>Collection<br>Pipeline</span>
+                    <div class="tooltip">Daily Data Ingestion</div>
                 </div>
             </div>
 
@@ -44,16 +33,16 @@
                 <div class="line">
                     <div class="data-packet"></div>
                 </div>
-                <div class="label">Daily Cron</div>
+                <div class="label">Store</div>
                 <i class="fas fa-chevron-right arrow-head"></i>
             </div>
 
-            <!-- Step 2: Actions -->
+            <!-- Step 2: R2 (Storage) -->
             <div class="arch-node">
-                <div class="node-box" data-tech="Actions">
-                    <i class="fab fa-github-alt"></i>
-                    <span>GitHub<br>Actions</span>
-                    <div class="tooltip">Processing & Filtering (>10k Subs)</div>
+                <div class="node-box" data-tech="Cloudflare">
+                    <i class="fas fa-cloud"></i>
+                    <span>Object<br>Storage</span>
+                    <div class="tooltip">Raw Data (R2)</div>
                 </div>
             </div>
 
@@ -62,22 +51,16 @@
                 <div class="line">
                     <div class="data-packet" style="animation-delay: 1s;"></div>
                 </div>
-                <div class="label">Process</div>
+                <div class="label">Load</div>
                 <i class="fas fa-chevron-right arrow-head"></i>
             </div>
 
-            <!-- Step 3: Branching (R2 / W&B) -->
-            <div class="arch-branch">
-                <div class="branch-nodes">
-                    <div class="node-box small" data-tech="Storage">
-                        <i class="fas fa-cloud"></i>
-                        <span>R2</span>
-                    </div>
-                    <div class="node-box small" data-tech="Viz">
-                        <img src="https://raw.githubusercontent.com/wandb/assets/main/wandb-logo-yellow.png" alt="W&B"
-                            class="wandb-icon">
-                        <span>W&B</span>
-                    </div>
+            <!-- Step 3: Training -->
+            <div class="arch-node">
+                <div class="node-box" data-tech="PyTorch">
+                    <i class="fas fa-brain"></i>
+                    <span>Training<br>Pipeline</span>
+                    <div class="tooltip">Model Training Repo</div>
                 </div>
             </div>
 
@@ -86,80 +69,21 @@
                 <div class="line">
                     <div class="data-packet" style="animation-delay: 2s;"></div>
                 </div>
-                <div class="label">Version</div>
+                <div class="label">Registry</div>
                 <i class="fas fa-chevron-right arrow-head"></i>
             </div>
 
-            <!-- Step 4: Dataset -->
+            <!-- Step 4: W&B -->
             <div class="arch-node">
-                <div class="node-box" data-tech="DVC">
-                    <i class="fas fa-database"></i>
-                    <span>Dataset<br>Repo</span>
+                <div class="node-box" data-tech="MLOps">
+                    <img src="https://raw.githubusercontent.com/wandb/assets/main/wandb-logo-yellow.png" alt="W&B"
+                        class="wandb-icon">
+                    <span>Weights &<br>Biases</span>
+                    <div class="tooltip">Model Registry & Viz</div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Stats Section -->
-    <section id="stats" class="stats-section">
-        <div class="stat-box">
-            <h3>15</h3>
-            <p>Categories</p>
-        </div>
-        <div class="stat-box">
-            <h3>7 Days</h3>
-            <p>Rolling Window</p>
-        </div>
-        <div class="stat-box">
-            <h3>Daily</h3>
-            <p>Updates</p>
-        </div>
-        <div class="stat-box">
-            <h3>100%</h3>
-            <p>Automated</p>
-        </div>
-    </section>
-
-    <!-- Pipeline Section -->
-    <section id="pipeline" class="pipeline-section">
-        <h2>The Pipeline</h2>
-        <div class="pipeline-flow">
-            <div class="step">
-                <div class="step-icon"><i class="fab fa-youtube"></i></div>
-                <h3>Fetch</h3>
-                <p>YouTube Data API v3 fetches fresh videos daily based on 15 categories.</p>
-            </div>
-            <div class="arrow">→</div>
-            <div class="step">
-                <div class="step-icon"><i class="fas fa-filter"></i></div>
-                <h3>Filter</h3>
-                <p>Strict quality gates: >10k subs, >0.01% view ratio, no shorts.</p>
-            </div>
-            <div class="arrow">→</div>
-            <div class="step">
-                <div class="step-icon"><i class="fas fa-server"></i></div>
-                <h3>Store</h3>
-                <p>Full-res to Cloudflare R2 (DVC) and compressed to W&B.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tech Stack -->
-    <section id="stack" class="stack-section">
-        <h2>Tech Stack</h2>
-        <div class="stack-grid">
-            <div class="stack-item"><i class="fab fa-python"></i> Python</div>
-            <div class="stack-item"><i class="fas fa-cube"></i> DVC</div>
-            <div class="stack-item"><i class="fas fa-cloud"></i> Cloudflare R2</div>
-            <div class="stack-item"><img src="https://raw.githubusercontent.com/wandb/assets/main/wandb-logo-yellow.png"
-                    alt="W&B" style="height:20px; vertical-align:middle;"> Weights & Biases</div>
-            <div class="stack-item"><i class="fab fa-github-alt"></i> GitHub Actions</div>
-        </div>
-    </section>
-
-    <footer>
-        <p>Built for the Open Source ML Community.</p>
-    </footer>
 </body>
 
 </html>
