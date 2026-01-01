@@ -1,0 +1,45 @@
+name: Update Model from Registry
+
+on:
+  workflow_dispatch:      # Manual trigger
+  repository_dispatch:    # Triggered by Pipeline API call
+    types: [new-model-promoted]
+  schedule:
+    - cron: '0 0 * * 0'   # Weekly: Every Sunday at Midnight
+
+permissions:
+  contents: write
+
+jobs:
+  update-model:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install wandb
+
+      - name: Download Production Model
+        env:
+          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        run: python scripts/download_prod_model.py
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code assets/model.onnx || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and Push if changed
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config --global user.name 'Model Updater Bot'
+          git config --global user.email 'bot@noreply.github.com'
+          git add assets/model.onnx
+          git commit -m "🤖 Update model.onnx from Registry (Production)"
+          git push
