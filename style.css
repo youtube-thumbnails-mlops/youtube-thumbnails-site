@@ -757,13 +757,15 @@ h3 {
     text-decoration: none;
     cursor: pointer;
 }
+
 /* Toast Notification */
 .toast-container {
     position: fixed;
-    top: 100px; /* Below navbar */
+    top: 100px;
+    /* Below navbar */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 3000;
+    z-index: 9999;
     pointer-events: none;
 }
 

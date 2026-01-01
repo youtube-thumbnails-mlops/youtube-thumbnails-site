@@ -10,14 +10,15 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- ONNX Runtime -->
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-    <script src="assets/inference.js?v=2"></script>
+    <script src="assets/inference.js?v=3"></script>
+    </script>
 </head>
 
 <body>
@@ -481,8 +482,8 @@
             drawPath('node-human', 'node-runpod', 'curve', 'Submit Job', { x: 0, y: 0 });
 
             // WB -> Inf: 'Deploy Static'. Center it.
-            // Move label up significantly (-25) to avoid overlap with box border
-            drawPath('node-wb', 'node-inf', 'step', 'Deploy', { x: 0, y: -25 });
+            // Move label up significantly (-25) AND Left (-50) to avoid overlap with wider box
+            drawPath('node-wb', 'node-inf', 'step', 'Deploy', { x: -50, y: -25 });
         }
 
 
