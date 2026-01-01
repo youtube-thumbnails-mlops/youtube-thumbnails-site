@@ -24,13 +24,9 @@
         <div class="arch-grid-complex">
             <!-- Node 1: Collection -->
             <div class="node-wrapper" style="grid-area: col;">
-                <div class="self-loop">
-                    <div class="loop-arrow"><i class="fas fa-undo"></i> Daily</div>
-                </div>
                 <div class="node-box" id="node-collection" data-tech="Python">
                     <i class="fas fa-terminal"></i>
                     <span>Collection<br>Pipeline</span>
-                    <div class="tooltip">Daily Cron Job</div>
                 </div>
             </div>
 
@@ -39,7 +35,6 @@
                 <div class="node-box" id="node-s3" data-tech="S3/R2">
                     <i class="fas fa-cloud"></i>
                     <span>Object<br>Storage</span>
-                    <div class="tooltip">S3 Compatible</div>
                 </div>
             </div>
 
@@ -48,7 +43,6 @@
                 <div class="node-box" id="node-dvc" data-tech="Git Ops">
                     <i class="fas fa-code-branch"></i>
                     <span>DVC<br>Dataset</span>
-                    <div class="tooltip">Data Versioning</div>
                 </div>
             </div>
 
@@ -57,7 +51,6 @@
                 <div class="node-box" id="node-train" data-tech="PyTorch">
                     <i class="fas fa-brain"></i>
                     <span>Training<br>Pipeline</span>
-                    <div class="tooltip">Model Training</div>
                 </div>
             </div>
 
@@ -66,7 +59,6 @@
                 <div class="node-box" id="node-wb" data-tech="MLOps">
                     <i class="fas fa-chart-line"></i>
                     <span>Weights &<br>Biases</span>
-                    <div class="tooltip">Registry & Viz</div>
                 </div>
             </div>
 
@@ -75,7 +67,6 @@
                 <div class="node-box" id="node-human" data-tech="Team">
                     <i class="fas fa-user-astronaut"></i>
                     <span>Analytics &<br>Selection</span>
-                    <div class="tooltip">Promote to Prod</div>
                 </div>
             </div>
 
@@ -164,21 +155,15 @@
             }, 1000);
         }
 
-        // --- Improved Connection Logic ---
+        // --- Improved Connection Logic with Vertical Support ---
         function drawConnections() {
             const svg = document.getElementById('connections-layer');
             const container = document.querySelector('.hero-architecture');
-
             if (!svg || !container) return;
 
-            // Clear old paths
-            while (svg.firstChild) {
-                svg.removeChild(svg.firstChild);
-            }
-
+            while (svg.firstChild) { svg.removeChild(svg.firstChild); }
             const cRect = container.getBoundingClientRect();
 
-            // Helper to get center relative to container
             function getCenter(id) {
                 const el = document.getElementById(id);
                 if (!el) return null;
@@ -186,66 +171,89 @@
                 return {
                     x: (r.left + r.width / 2) - cRect.left,
                     y: (r.top + r.height / 2) - cRect.top,
-                    w: r.width, h: r.height
+                    w: r.width, h: r.height,
+                    top: r.top - cRect.top,
+                    bottom: r.bottom - cRect.top,
+                    left: r.left - cRect.left,
+                    right: r.right - cRect.left
                 };
             }
 
-            function drawPath(id1, id2, type = 'curve', label = null) {
+            function drawPath(id1, id2, type = 'curve', label = null, labelOffset = { x: 0, y: 0 }) {
                 const p1 = getCenter(id1);
                 const p2 = getCenter(id2);
                 if (!p1 || !p2) return;
 
                 let d = '';
+                // Default label position (midpoint)
+                let lx = (p1.x + p2.x) / 2;
+                let ly = (p1.y + p2.y) / 2;
+
                 if (type === 'curve') {
                     const deltaX = p2.x - p1.x;
                     const c1x = p1.x + deltaX * 0.5;
                     const c2x = p2.x - deltaX * 0.5;
                     d = `M ${p1.x} ${p1.y} C ${c1x} ${p1.y}, ${c2x} ${p2.y}, ${p2.x} ${p2.y}`;
+                    // Curve midpoint calculation is complex, but geometric mid is usually okay with offset.
+                    // Let's bias Y up slightly for curves that dip.
+                    ly = p1.y + (p2.y - p1.y) * 0.5;
+                    if (Math.abs(p1.y - p2.y) < 20) ly -= 10; // If mostly horizontal, push label up
+
                 } else if (type === 'step') {
                     const midY = (p1.y + p2.y) / 2;
                     d = `M ${p1.x} ${p1.y} L ${p1.x} ${midY} L ${p2.x} ${midY} L ${p2.x} ${p2.y}`;
+
+                    // For 'step', place label on the horizontal bar
+                    lx = (p1.x + p2.x) / 2;
+                    ly = midY - 5;
+
+                } else if (type === 'straight') {
+                    d = `M ${p1.x} ${p1.bottom} L ${p2.x} ${p2.top}`;
+                    ly = (p1.bottom + p2.top) / 2;
+                    lx = (p1.x + p2.x) / 2;
+
                 } else if (type === 'loop') {
-                    // Better Daily Loop
-                    const r = 30;
+                    // Centered Loop: Arch above the box
                     const startX = p1.x;
-                    const startY = p1.y - p1.h / 2; // Top of box
-                    // A loop that goes up, left, down, back to start
-                    d = `M ${startX} ${startY} 
-                          C ${startX} ${startY - 50}, ${startX - 60} ${startY - 50}, ${startX - 60} ${startY} 
-                          C ${startX - 60} ${startY + 40}, ${startX - 10} ${startY + 10}, ${startX - 10} ${startY}`;
+                    const startY = p1.top;
+                    // Draw a loop that goes up-left, curves around top, comes down-right
+                    d = `M ${startX - 10} ${startY} 
+                          C ${startX - 40} ${startY - 30}, ${startX - 40} ${startY - 50}, ${startX} ${startY - 50}
+                          C ${startX + 40} ${startY - 50}, ${startX + 40} ${startY - 30}, ${startX + 10} ${startY}`;
+
+                    lx = startX;
+                    ly = startY - 55; // On top of the loop
                 }
 
-                // Create Path
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('d', d);
                 path.setAttribute('class', 'connection-line');
+                if (type === 'straight') path.style.strokeDasharray = "5,5";
                 svg.appendChild(path);
 
-                // Create Packet
                 const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 packet.setAttribute('r', '3');
                 packet.setAttribute('class', 'connection-packet');
                 const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
-                anim.setAttribute('dur', '2.5s');
+                anim.setAttribute('dur', '2s');
                 anim.setAttribute('repeatCount', 'indefinite');
                 anim.setAttribute('path', d);
                 packet.appendChild(anim);
                 svg.appendChild(packet);
 
-                // Label
                 if (label) {
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    let mx = (p1.x + p2.x) / 2;
-                    let my = (p1.y + p2.y) / 2;
 
-                    if (type === 'loop') {
-                        mx = p1.x - 30; my = p1.y - 35;
-                    }
+                    // Apply Manual Offset
+                    lx += labelOffset.x;
+                    ly += labelOffset.y;
 
-                    text.setAttribute('x', mx);
-                    text.setAttribute('y', my - 8);
+                    text.setAttribute('x', lx);
+                    text.setAttribute('y', ly);
                     text.setAttribute('class', 'connection-label');
                     text.setAttribute('text-anchor', 'middle');
+
+                    // Add background rect? For now just text.
                     text.textContent = label;
                     svg.appendChild(text);
                 }
@@ -253,14 +261,26 @@
 
             // Draw all
             drawPath('node-collection', 'node-collection', 'loop', 'Daily Cron');
-            drawPath('node-collection', 'node-s3', 'curve', 'Raw');
-            drawPath('node-s3', 'node-wb', 'curve', 'Visualization');
+            drawPath('node-collection', 'node-s3', 'curve', 'Raw', { x: 0, y: -5 });
+
+            // S3 -> WB
+            drawPath('node-s3', 'node-wb', 'curve', 'Visualization', { x: 0, y: -5 });
+
             drawPath('node-s3', 'node-dvc', 'step');
-            drawPath('node-dvc', 'node-train', 'step', 'New Release');
-            drawPath('node-train', 'node-wb', 'curve', 'Register');
-            drawPath('node-human', 'node-wb', 'step', 'Select Best');
-            drawPath('node-wb', 'node-inf', 'step', 'Deploy Static');
+
+            // DVC -> Train: "On New Dataset Release". 'step' puts it on midY horizontal.
+            // User wants it "more on left".
+            drawPath('node-dvc', 'node-train', 'step', 'On New Dataset Release', { x: -30, y: -5 });
+
+            drawPath('node-train', 'node-wb', 'curve', 'Register', { x: 0, y: -5 });
+
+            // Human -> WB
+            drawPath('node-human', 'node-wb', 'straight', 'Promote to Prod', { x: 10, y: 0 });
+
+            // WB -> Inf: 'Deploy Static'. Center it.
+            drawPath('node-wb', 'node-inf', 'step', 'Deploy', { x: 0, y: -5 });
         }
+
 
         // Wait for layout to be stable
         window.addEventListener('load', () => {

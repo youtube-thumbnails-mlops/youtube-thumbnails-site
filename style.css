@@ -216,12 +216,12 @@ h3 {
     display: grid;
     /* Col | Space | S3/Stack | Space | WB | Space | Inf */
     grid-template-areas:
-        ".    .  human .  .   .  ."
-        "col  .  s3    .  wb  .  inf"
-        ".    .  v1    .  wb  .  inf"
-        ".    .  dvc   .  wb  .  inf"
-        ".    .  v2    .  wb  .  inf"
-        ".    .  train .  wb  .  inf";
+        ".    .  .     .  human .  ."
+        "col  .  s3    .  wb    .  inf"
+        ".    .  v1    .  wb    .  inf"
+        ".    .  dvc   .  wb    .  inf"
+        ".    .  v2    .  wb    .  inf"
+        ".    .  train .  wb    .  inf";
     grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr;
     grid-template-rows: auto auto 40px auto 40px auto;
     gap: 1rem;
@@ -533,6 +533,7 @@ h3 {
 }
 
 /* Labels */
+/* Disabled per user request
 .node-box::before {
     content: attr(data-tech);
     position: absolute;
@@ -548,6 +549,7 @@ h3 {
 .node-box:hover::before {
     opacity: 1;
 }
+*/
 
 /* Reusing specific box colors */
 .node-box[data-tech="S3/R2"] {
