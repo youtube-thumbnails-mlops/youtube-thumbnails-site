@@ -18,96 +18,182 @@
 <body>
     <!-- Hero Section -->
     <section class="hero-architecture">
+        <!-- SVG Layer for Curved Connections -->
+        <svg id="connections-layer"></svg>
+
         <div class="arch-grid-complex">
-            <!-- Node 1: Collection (Top Left) -->
+            <!-- Node 1: Collection -->
             <div class="node-wrapper" style="grid-area: col;">
                 <div class="self-loop">
                     <div class="loop-arrow"><i class="fas fa-undo"></i> Daily</div>
                 </div>
-                <div class="node-box" data-tech="Python">
+                <div class="node-box" id="node-collection" data-tech="Python">
                     <i class="fas fa-terminal"></i>
                     <span>Collection<br>Pipeline</span>
                     <div class="tooltip">Daily Cron Job</div>
                 </div>
             </div>
 
-            <!-- Connector: Col -> S3 -->
-            <div class="connector-horizontal" style="grid-area: c1;">
-                <div class="line">
-                    <div class="data-packet"></div>
-                </div>
-                <div class="label">Raw</div>
-                <i class="fas fa-chevron-right arrow-head"></i>
-            </div>
-
-            <!-- Node 2: S3 (Top Center) -->
+            <!-- Node 2: S3 -->
             <div class="node-wrapper" style="grid-area: s3;">
-                <div class="node-box" data-tech="S3/R2">
-                    <i class="fas fa-database"></i> <!-- bucket icon? database is fine -->
+                <div class="node-box" id="node-s3" data-tech="S3/R2">
+                    <i class="fas fa-cloud"></i>
                     <span>Object<br>Storage</span>
                     <div class="tooltip">S3 Compatible</div>
                 </div>
             </div>
 
-            <!-- Connector: S3 -> W&B (Top Right) -->
-            <div class="connector-horizontal" style="grid-area: c2;">
-                <div class="line">
-                    <div class="data-packet" style="animation-delay: 1s;"></div>
-                </div>
-                <div class="label">Viz</div>
-                <i class="fas fa-chevron-right arrow-head"></i>
-            </div>
-
-            <!-- Node 5: W&B (Right Column, Spanning) -->
-            <div class="node-wrapper" style="grid-area: wb;">
-                <div class="node-box" data-tech="MLOps">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Weights &<br>Biases</span>
-                    <div class="tooltip">Registry & Viz</div>
-                </div>
-            </div>
-
-            <!-- Connector: S3 -> DVC (Vertical Down) -->
-            <div class="connector-vertical" style="grid-area: v1;">
-                <div class="line-vertical">
-                    <div class="data-packet-vertical"></div>
-                </div>
-                <i class="fas fa-chevron-down arrow-head-vertical"></i>
-            </div>
-
-            <!-- Node 3: DVC (Middle Center) -->
+            <!-- Node 3: DVC -->
             <div class="node-wrapper" style="grid-area: dvc;">
-                <div class="node-box" data-tech="Git Ops">
+                <div class="node-box" id="node-dvc" data-tech="Git Ops">
                     <i class="fas fa-code-branch"></i>
                     <span>DVC<br>Dataset</span>
                     <div class="tooltip">Data Versioning</div>
                 </div>
             </div>
 
-            <!-- Connector: DVC -> Training (Vertical Down) -->
-            <div class="connector-vertical" style="grid-area: v2;">
-                <div class="line-vertical">
-                    <div class="data-packet-vertical" style="animation-delay: 1.5s;"></div>
-                </div>
-                <i class="fas fa-chevron-down arrow-head-vertical"></i>
-            </div>
-
-            <!-- Node 4: Training (Bottom Center) -->
+            <!-- Node 4: Training -->
             <div class="node-wrapper" style="grid-area: train;">
-                <div class="node-box" data-tech="PyTorch">
+                <div class="node-box" id="node-train" data-tech="PyTorch">
                     <i class="fas fa-brain"></i>
                     <span>Training<br>Pipeline</span>
                     <div class="tooltip">Model Training</div>
                 </div>
             </div>
 
-            <!-- Connector: Training -> W&B (Bottom Right Curve) -->
-            <div class="connector-elbow" style="grid-area: c3;">
-                <div class="elbow-line">
-                    <div class="data-packet-elbow"></div>
+            <!-- Node 5: W&B -->
+            <div class="node-wrapper" style="grid-area: wb;">
+                <div class="node-box" id="node-wb" data-tech="MLOps">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Weights &<br>Biases</span>
+                    <div class="tooltip">Registry & Viz</div>
                 </div>
-                <div class="label-elbow">Register</div>
+            </div>
+
+            <!-- Node 6: Inference Demo -->
+            <div class="node-wrapper" style="grid-area: inf;">
+                <div class="inference-box" id="node-inf">
+                    <div class="inf-header"><i class="fas fa-rocket"></i> Live Inference</div>
+                    <div class="inf-inputs">
+                        <div class="file-upload">
+                            <i class="fas fa-image"></i>
+                            <span>Upload Thumb</span>
+                        </div>
+                        <input type="text" placeholder="Enter title..." class="inf-text">
+                    </div>
+                    <button class="btn-predict" onclick="simulatePrediction()">
+                        Predict Score
+                    </button>
+                    <div class="inf-result" id="inf-result">
+                        <span class="score">--</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+
+    <script>
+        function connect(id1, id2, type = 'curve', label = null) {
+            const svg = document.getElementById('connections-layer');
+            const el1 = document.getElementById(id1);
+            const el2 = document.getElementById(id2);
+
+            if (!el1 || !el2) return;
+
+            const r1 = el1.getBoundingClientRect();
+            const r2 = el2.getBoundingClientRect();
+            const container = document.querySelector('.hero-architecture').getBoundingClientRect();
+
+            // Calculate centers relative to container
+            const x1 = r1.left + r1.width / 2 - container.left;
+            const y1 = r1.top + r1.height / 2 - container.top;
+            const x2 = r2.left + r2.width / 2 - container.left;
+            const y2 = r2.top + r2.height / 2 - container.top;
+
+            let pathD = '';
+
+            if (type === 'curve') {
+                const deltaX = x2 - x1;
+                // Control points for smooth curve
+                const c1x = x1 + deltaX * 0.5;
+                const c1y = y1;
+                const c2x = x2 - deltaX * 0.5;
+                const c2y = y2;
+                pathD = `M ${x1} ${y1} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${x2} ${y2}`;
+            } else if (type === 'step') {
+                // Vertical then Horizontal
+                const midY = (y1 + y2) / 2;
+                pathD = `M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}`;
+            }
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathD);
+            path.setAttribute('class', 'connection-line');
+            svg.appendChild(path);
+
+            // Add animating packet
+            const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            packet.setAttribute('r', '3');
+            packet.setAttribute('class', 'connection-packet');
+
+            // Animate motion along path
+            const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+            animate.setAttribute('dur', '2s');
+            animate.setAttribute('repeatCount', 'indefinite');
+            animate.setAttribute('path', pathD);
+            packet.appendChild(animate);
+            svg.appendChild(packet);
+
+            // Label
+            if (label) {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                // Simple midpoint
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2;
+                text.setAttribute('x', midX);
+                text.setAttribute('y', midY - 10);
+                text.setAttribute('class', 'connection-label');
+                text.setAttribute('text-anchor', 'middle');
+                text.textContent = label;
+                svg.appendChild(text);
+            }
+        }
+
+        function drawConnections() {
+            const svg = document.getElementById('connections-layer');
+            svg.innerHTML = ''; // Clear old
+
+            // 1. Col -> S3
+            connect('node-collection', 'node-s3', 'curve', 'Raw');
+            // 2. S3 -> W&B
+            connect('node-s3', 'node-wb', 'curve', 'Viz');
+            // 3. S3 -> DVC
+            connect('node-s3', 'node-dvc', 'step');
+            // 4. DVC -> Train
+            connect('node-dvc', 'node-train', 'step', 'New Release');
+            // 5. Train -> W&B
+            connect('node-train', 'node-wb', 'curve', 'Register');
+            // 6. W&B -> Inference
+            connect('node-wb', 'node-inf', 'step', 'Serve Model');
+        }
+
+        function simulatePrediction() {
+            const btn = document.querySelector('.btn-predict');
+            const result = document.getElementById('inf-result');
+
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const score = (Math.random() * 5 + 5).toFixed(1); // 5.0 to 10.0
+                btn.innerHTML = 'Predict Score';
+                btn.disabled = false;
+                result.innerHTML = `<span class="score-label">Viral Score:</span> <span class="score-value">${score}/10</span>`;
+                drawConnections(); // Redraw in case layout shifted
+            }, 1500);
+        }
+
+        window.addEventListener('load', drawConnections);
+        window.addEventListener('resize', drawConnections);
+    </script>
 </body>

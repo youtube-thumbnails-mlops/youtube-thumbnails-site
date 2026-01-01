@@ -177,130 +177,178 @@ h3 {
     font-size: 1.2rem;
 }
 
-/* architecture-grid-complex */
+/* SVG Connection Layer */
+#connections-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    /* Behind nodes but visible */
+    pointer-events: none;
+}
+
+.connection-line {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 2;
+}
+
+.connection-packet {
+    fill: var(--accent-cyan);
+    filter: drop-shadow(0 0 5px var(--accent-cyan));
+}
+
+.connection-label {
+    fill: var(--text-secondary);
+    font-size: 0.7rem;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.8);
+    /* rudimentary backplate */
+}
+
+/* Architecture Grid System */
 .arch-grid-complex {
     display: grid;
     grid-template-areas:
-        "col  c1  s3  c2  wb"
-        ".    .   v1  .   wb"
-        ".    .   dvc .   wb"
-        ".    .   v2  .   wb"
-        ".    .   train c3 wb";
-    grid-template-columns: 1fr 100px 1fr 100px 1fr;
-    grid-template-rows: auto 50px auto 50px auto;
-    gap: 1rem;
+        "col  .  s3   .  wb"
+        ".    .  dvc  .  wb"
+        ".    .  train . wb"
+        ".    .  .     . inf";
+    grid-template-columns: 1fr 50px 1fr 50px 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 3rem 1rem;
     align-items: center;
     justify-items: center;
-    transform: scale(1.1);
+    position: relative;
+    z-index: 2;
+    /* Above SVG */
+    max-width: 1000px;
+    width: 100%;
 }
 
-/* Node Wrapper for positioning extras like self-loops */
+/* Node Wrapper */
 .node-wrapper {
     position: relative;
     display: flex;
     justify-content: center;
+    z-index: 2;
 }
 
-/* Self Loop (Collection) */
+/* W&B Node Spanning */
+.node-wrapper[style*="wb"] {
+    grid-row: 1 / span 3;
+    /* Spans top 3 rows */
+    align-self: center;
+}
+
+/* Inference Box Styling */
+.inference-box {
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--accent-pink);
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+.inf-header {
+    font-size: 0.9rem;
+    color: var(--accent-pink);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.inf-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.file-upload {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--text-secondary);
+    border-radius: 6px;
+    padding: 0.8rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.file-upload:hover {
+    border-color: var(--accent-cyan);
+    color: var(--text-primary);
+}
+
+.inf-text {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.5rem;
+    color: white;
+    font-size: 0.8rem;
+    width: 100%;
+}
+
+.btn-predict {
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-predict:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 242, 234, 0.3);
+}
+
+.btn-predict:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.inf-result {
+    text-align: center;
+    min-height: 1.2rem;
+}
+
+.score-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.score-value {
+    color: var(--accent-cyan);
+    font-weight: bold;
+    font-size: 1rem;
+    margin-left: 5px;
+}
+
+/* Self Loop */
 .self-loop {
     position: absolute;
-    top: -40px;
+    top: -30px;
     left: 50%;
     transform: translateX(-50%);
     color: var(--accent-pink);
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     white-space: nowrap;
     animation: bounce 2s infinite;
-}
-
-.self-loop i {
-    transform: rotate(-90deg);
-    margin-right: 5px;
-}
-
-/* Horizontal Connector */
-.connector-horizontal {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-}
-
-/* Vertical Connector */
-.connector-vertical {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    position: relative;
-}
-
-.line-vertical {
-    width: 2px;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-}
-
-.arrow-head-vertical {
-    position: absolute;
-    bottom: -10px;
-    /* Slight offset */
-    color: var(--accent-cyan);
-    font-size: 0.8rem;
-}
-
-/* Elbow Connector (Training -> W&B) */
-/* We need a line that goes Right then Up? Or just direct? */
-/* Layout: Train is (col 3, row 5). W&B is (col 5, row 1-5). */
-/* So Train connects to W&B via C3 (col 4, row 5). */
-/* A simple horizontal line works if W&B spans down. */
-/* Let's make W&B Box HUGE to span vertically or center it? */
-/* Better: Center W&B and have lines converge. */
-/* Current grid area 'wb' spans rows 1-5. */
-
-.node-wrapper[style*="wb"] {
-    grid-row: 1 / span 5;
-    align-self: center;
-    /* Center W&B vertically against all rows */
-}
-
-/* Elbow specific styling */
-.connector-elbow {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.elbow-line {
-    width: 100%;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-}
-
-.data-packet-elbow {
-    width: 40px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-pink));
-    position: absolute;
-    left: -40px;
-    animation: flow 2s linear infinite;
-}
-
-.label-elbow {
-    position: absolute;
-    top: -15px;
-    width: 100%;
-    text-align: center;
-    font-size: 0.6rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
 }
 
 /* Animations */
@@ -437,6 +485,7 @@ h3 {
 }
 
 /* Shared Line Components */
+/* These are likely deprecated by SVG connections, but kept if used elsewhere */
 .line {
     width: 100%;
     height: 2px;
@@ -476,30 +525,26 @@ h3 {
 @media (max-width: 900px) {
     .arch-grid-complex {
         display: flex;
+        /* Stack on mobile */
         flex-direction: column;
-        gap: 2rem;
-        transform: scale(0.9);
+        gap: 3rem;
     }
 
-    .connector-horizontal,
-    .connector-vertical,
-    .connector-elbow {
-        transform: rotate(90deg);
-        height: 50px;
-        width: 2px;
-    }
-
-    .line,
-    .elbow-line {
-        width: 2px;
-        height: 100%;
-    }
-
-    .arrow-head {
+    #connections-layer {
         display: none;
+        /* Hide SVG connections on mobile */
     }
 
-    .self-loop {
-        display: none;
+    /* Fallback mobile arrows if needed, or just stack */
+    .node-wrapper::after {
+        content: '↓';
+        position: absolute;
+        bottom: -2rem;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+    }
+
+    .node-wrapper:last-child::after {
+        content: none;
     }
 }
