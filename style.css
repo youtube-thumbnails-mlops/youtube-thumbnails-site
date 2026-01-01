@@ -177,22 +177,56 @@ h3 {
     font-size: 1.2rem;
 }
 
-/* Connectors */
+/* Connectors & Animation */
 .arch-connector {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    width: 100px;
+    width: 140px;
+    /* Wider for travel distance */
     position: relative;
+    z-index: 1;
 }
 
 .line {
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, var(--border-color), var(--accent-cyan));
+    background: rgba(255, 255, 255, 0.1);
     position: relative;
     top: 10px;
+    overflow: hidden;
+}
+
+/* Data Packet Animation */
+.data-packet {
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-pink));
+    position: absolute;
+    left: -40px;
+    animation: flow 2s linear infinite;
+    box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+@keyframes flow {
+    0% {
+        left: -40px;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        left: 100%;
+        opacity: 0;
+    }
 }
 
 .label {
@@ -208,7 +242,32 @@ h3 {
     font-size: 0.8rem;
     position: relative;
     top: -2px;
-    left: 45px;
+    left: 65px;
+}
+
+/* Tooltips */
+.tooltip {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(5, 5, 5, 0.9);
+    border: 1px solid var(--accent-cyan);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.node-box:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 /* Tech Labels */
