@@ -43,7 +43,7 @@ async function initModel() {
             console.warn("Metadata load failed", e);
         }
 
-        document.getElementById("model-status").innerText = "Model Ready" + versionText;
+        document.getElementById("model-status").innerHTML = `<i class="fas fa-check-circle" style="color: #00ff00;"></i> <span>Model Ready${versionText}</span>`;
         document.getElementById("model-status").classList.add("text-green-500");
 
         // Enable buttons
@@ -54,7 +54,7 @@ async function initModel() {
         });
     } catch (e) {
         console.error("❌ Failed to load model:", e);
-        document.getElementById("model-status").innerText = "Model Failed";
+        document.getElementById("model-status").innerHTML = `<i class="fas fa-times-circle" style="color: #ff0000;"></i> <span>Model Failed</span>`;
         document.getElementById("model-status").classList.add("text-red-500");
     }
 }
