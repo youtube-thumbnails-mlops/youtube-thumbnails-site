@@ -33,13 +33,13 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          git diff --exit-code assets/model.onnx || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --exit-code assets/model.onnx assets/model_metadata.json || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Commit and Push if changed
         if: steps.git-check.outputs.changed == 'true'
         run: |
           git config --global user.name 'Model Updater Bot'
           git config --global user.email 'bot@noreply.github.com'
-          git add assets/model.onnx
+          git add assets/model.onnx assets/model_metadata.json
           git commit -m "🤖 Update model.onnx from Registry (Production)"
           git push
