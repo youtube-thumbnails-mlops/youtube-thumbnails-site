@@ -45,7 +45,7 @@ h3 {
 
 /* Navigation */
 .glass-nav {
-    position: fixed;
+    position: absolute;
     top: 0;
     width: 100%;
     padding: 1.5rem 5%;
@@ -101,11 +101,13 @@ h3 {
     /* Changed from height: 100vh to allow growth */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    /* FORCE top alignment */
     background: radial-gradient(circle at 50% 50%, rgba(0, 242, 234, 0.05) 0%, #050505 80%);
     width: 100%;
     overflow: hidden;
-    padding-top: 120px;
+    padding-top: 220px;
+    /* Definitive clearance */
     padding-bottom: 50px;
     /* Add bottom padding */
     /* Offset for Fixed Navbar (Increased) */
@@ -115,8 +117,10 @@ h3 {
     display: flex;
     align-items: center;
     gap: 1rem;
-    transform: scale(1.1);
+    /* transform: scale(1.1); Removed */
     /* Make it pop */
+    margin: 0 auto;
+    /* Safe vertical centering */
 }
 
 /* Nodes */
