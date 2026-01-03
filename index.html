@@ -10,7 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=12">
+    <link rel="stylesheet" href="style.css?v=13">
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <!-- FontAwesome for Icons -->
@@ -291,43 +291,41 @@
             }
 
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            // Use circle-notch for consistency and make it clear
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
             btn.disabled = true;
             resultBox.style.display = 'none';
 
-            try {
-                // Call inference.js
-                // Note: The model is classification, but user wants a "Score".
-                // We will simulate a "Virality Score" based on the CONFIDENCE of the top class.
-                // High confidence = High Score (just as a demo, since we don't have a regression model yet).
-                // Or we show the Category Name.
+            // Allow UI to repaint BEFORE blocking inference
+            setTimeout(async () => {
+                try {
+                    const result = await runInference(imgElement);
 
-                const result = await runInference(imgElement);
+                    // UX: Show Result
+                    const confidencePercent = (result.confidence * 100).toFixed(1);
 
-                // UX: Show Result
-                const confidencePercent = (result.confidence * 100).toFixed(1);
+                    // Display Category and Confidence instead of scalar score for now
+                    scoreBadge.innerHTML = `<span style="font-size:0.6em">${result.category}</span><br>${confidencePercent}%`;
+                    scoreBadge.style.lineHeight = "1.2";
 
-                // Display Category and Confidence instead of scalar score for now
-                scoreBadge.innerHTML = `<span style="font-size:0.6em">${result.category}</span><br>${confidencePercent}%`;
-                scoreBadge.style.lineHeight = "1.2";
+                    // Color code
+                    if (result.confidence > 0.8) scoreBadge.style.background = 'var(--accent-cyan)';
+                    else scoreBadge.style.background = 'var(--accent-pink)';
 
-                // Color code
-                if (result.confidence > 0.8) scoreBadge.style.background = 'var(--accent-cyan)';
-                else scoreBadge.style.background = 'var(--accent-pink)';
+                    resultBox.style.display = 'flex';
 
-                resultBox.style.display = 'flex';
+                    // Trigger visual "pulse" on W&B connection only if on desktop
+                    if (window.innerWidth > 900) {
+                        drawConnections();
+                    }
 
-                // Trigger visual "pulse" on W&B connection only if on desktop
-                if (window.innerWidth > 900) {
-                    drawConnections();
+                } catch (e) {
+                    showToast("Inference Failed: " + e.message);
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
                 }
-
-            } catch (e) {
-                showToast("Inference Failed: " + e.message);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+            }, 50); // 50ms delay to force render
         }
 
         // Initialize Model on Load
